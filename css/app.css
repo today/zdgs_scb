@@ -8,7 +8,7 @@ body {
 }
 
 .logo {
-    margin-left: 8%;
+    margin-left: 3%;
 	font-size: 1.6em;
     color: #fff;
 }
@@ -45,10 +45,11 @@ button:hover {
     box-shadow: 0px 2px 2px 0px RGBA(0, 0, 0, 0.22);
 }
 
-nav {
+.head {
     display: inline-block;
-    background: #009688;
+    background: #94D2DB;
     box-shadow: 0 2px 5px rgba(0,0,0,0.22);
+    height: 7em;
     width: 100%;
 }
 
