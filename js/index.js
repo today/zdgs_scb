@@ -24,7 +24,7 @@ var init_100 = function(){
   vm.src_files_flag.push("终端销售明细表渭南");
   vm.src_files_flag.push("终端销售明细表西安");
   vm.src_files_flag.push("终端销售明细表铜川");
-  
+
 }
 
 var check_env_110 = function(){
@@ -69,11 +69,16 @@ var check_src_130 = function(){
       run_flag = false;
     }
   }
-  return run_flag;;
-
+  return run_flag;
 }
 
+var check_column_140 = function(){
+  
+}
 
+var save_to_db = function(){
+
+}
 
 
 
