@@ -35,22 +35,23 @@
             {{a_msg}} 
           </div>
         </div>
-        下列文件是自动匹配的输入文件，请仔细检查是否正确：
-        <input type="file" id="file_src" style="display:none;" > <br>
-        
-        <table>
-        <tr><td>工作目录 : </td><td>......{{base_dir.substring(base_dir.length-25)}}</td></tr>
-        <tr v-for=" a_file in src_files_flag">
-            <td> {{a_file}} : </td><td> {{ src_files[a_file] }} </td>
-        </tr>
-        </table>
-        
+        <div id="srcfile_area" >
+          下列文件是自动匹配的输入文件，请仔细检查是否正确：
+          <input type="file" id="file_src" style="display:none;" >
+          <table border="0">
+          <tr><td>工作目录 : </td>
+              <td width="20em"> </td>
+              <td>......{{base_dir.substring(base_dir.length-25)}}</td></tr>
+          <tr v-for=" a_file in src_files_flag">
+              <td> {{a_file}} : </td><td > </td><td> {{ src_files[a_file] }} </td>
+          </tr>
+          </table>
+        </div>
     </div>
 
     <div id="cmd_area">
-
       <div v-for="a_step in step_array">
-        <span v-if="step>=a_step.idx">
+        <span v-if="true || step>=a_step.idx">
         {{a_step.desc}} 
         <button :disabled="!(step==a_step.idx)" @click="do_proc(a_step)" > 运行 </button><br/><br/>
         </span>
@@ -60,11 +61,11 @@
   </div>
   </div>
 
-  <div id="debug_area" style="display:none;"><h3>Debug Area</h3>
+  <div id="debug_area" style="display:none1;"><h3>Debug Area</h3>
     step:<input  type="number" v-model="step"  name="text_1" />
     {{step}}
     <br><br>
-    <button  @click="setStep(220)" > 220 </button> 
+    <button  @click="setStep(140)" > 140 </button> 
     <button  @click="setStep(180)" > 180 </button><br/>
     
     <br/>
