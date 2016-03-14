@@ -72,9 +72,29 @@ var check_src_130 = function(){
   return run_flag;
 }
 
-var check_column_140 = function(){
+var check_order_140 = function(){
   var run_flag = true;
   
+  //  终端销售明细表  格式检查
+  var must_field3 = [];
+  must_field3.push("物料编码");
+  must_field3.push("机型");
+  must_field3.push("归属地州");
+  must_field3.push("手机串码");
+
+  // 循环检查所有销售订单文件
+
+
+
+
+  setTimeout(function() {
+    document.getElementById('srcfile_area').style.cssText = "font-size:9px;color:grey;";
+    console.log( document.getElementById('srcfile_area').style );
+  }, 3*1000);
+  return run_flag;
+}
+
+var check_arrival_150 = function(){
   // 到货数据  格式检查
   var must_field = [];
   must_field.push("记录的创建日期");
@@ -82,7 +102,9 @@ var check_column_140 = function(){
   must_field.push("移出物料");
   must_field.push("移出物料描述");
   must_field.push("移入库位描述");
+}
 
+var check_transfer_160 = function(){
   //  自有调社会  格式检查
   var must_field2 = [];
   must_field2.push("物料编号");
@@ -90,24 +112,9 @@ var check_column_140 = function(){
   must_field2.push("实际交货日期");
   must_field2.push("实际交货数量");
   must_field2.push("物料编号");
-
-  //  终端销售明细表  格式检查
-  var must_field3 = [];
-  must_field3.push("物料编码");
-  must_field3.push("机型");
-  must_field3.push("归属地州");
-  must_field3.push("手机串码");
-  
-
-
-
-  
-  setTimeout(function() {
-    document.getElementById('srcfile_area').style.cssText = "font-size:9px;color:grey;";
-    console.log( document.getElementById('srcfile_area').style );
-  }, 3*1000);
-  return run_flag;
 }
+
+
 
 var save_to_db = function(){
   var run_flag = true;
@@ -118,7 +125,15 @@ var save_to_db = function(){
 }
 
 
-
+var check_must_title = function(target, keywords ){
+  for(var i=0; i<keywords.length; i++ ){
+    var kw = keywords[i];
+    if( -1 === _.indexOf(target, kw)){
+      // 显示出错提示。
+      ERR_MSG.put("数据出错：。无法找到「"+ kw +"」列，请检查数据的第一行。" );
+    }
+  }
+}
 
 
 
