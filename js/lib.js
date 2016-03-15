@@ -131,6 +131,21 @@ function trim_array_element( a_array ){
   }
 }
 
+var find_title_index = function( title_array, t_name){
+  var a_index = _.indexOf( title_array, t_name );
+  return a_index;
+};
+
+
+var find_title_index_from_array = function( title_array, name_array ){
+  var index_array = [];
+  for( var i=0; i<name_array.length; i++ ){
+    index_array.push(find_title_index(title_array, name_array[i]));
+  }
+  return index_array;
+};
+
+
 function isblank(strA){
   if(strA){
     if( "string" === typeof(strA) ){
