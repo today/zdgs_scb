@@ -86,7 +86,10 @@ var check_order_140 = function(){
   must_field.push("物料编码");
   must_field.push("机型");
   must_field.push("归属地州");
+  must_field.push("手机号码");
   must_field.push("手机串码");
+  must_field.push("录入日期");
+  
   ORDER_DETAIL.push(must_field);
 
   // 循环检查所有销售订单文件
@@ -114,9 +117,12 @@ var check_order_140 = function(){
       ORDER_DETAIL = ORDER_DETAIL.concat( _.rest(order_info2) );
       console.log("ORDER_DETAIL.length=" + ORDER_DETAIL.length);
     }
-    
   }
 
+  // 检查历史数据，看是否有重复数据，有则报错。
+  var all_order = getAllOrder();
+  var imei_index = find_title_index(all_order[0], "手机串码");
+  var imei_array = select_col_from_array( all_order, imei_index);
 
 
 
@@ -127,7 +133,18 @@ var check_order_140 = function(){
   return run_flag;
 }
 
-var check_arrival_150 = function(){
+// 订单数据存入数据库
+var order_to_db_150 = function(){
+  
+  
+
+
+
+  // 把所有数据存入DB。
+
+}
+
+var check_arrival_160 = function(){
   // 到货数据  格式检查
   var must_field = [];
   must_field.push("记录的创建日期");
@@ -141,7 +158,7 @@ var check_arrival_150 = function(){
   return true;
 }
 
-var check_transfer_160 = function(){
+var check_transfer_170 = function(){
   //  自有调社会  格式检查
   var must_field2 = [];
   must_field2.push("物料编号");
@@ -152,13 +169,23 @@ var check_transfer_160 = function(){
 }
 
 
+// 获得当月全部订单数据。
+var getAllOrder = function(){
+  var all_order = getData_from_xlsx("db/all_order.xlsx");
+  if( all_order === null ){
+    all_order = [];
+  }
+  return all_order;
+}
 
-var save_to_db = function(){
-  var run_flag = true;
-
-  
-  
-  return run_flag;
+var getData_from_xlsx = function( fullpath ){
+  var data = null;
+  if( fs.existsSync(fullpath) ){
+    var obj = null;
+    obj = xlsx.parse( fullpath ); // 读入xlsx文件
+    data = obj[0].data;
+  }
+  return data;
 }
 
 

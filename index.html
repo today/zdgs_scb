@@ -65,7 +65,7 @@
     <div>Debug Area</div><br/>
     step:<input  type="number" v-model="step"  name="text_1" /> {{step}}
     <br><br>
-    <button  @click="setStep(140)" > 140 </button> 
+    <button  @click="setStep(140)" > 110 </button> 
     <button  @click="setStep(180)" > 180 </button><br/>
   </div>
 
@@ -80,7 +80,7 @@ var vm = new Vue({
   el: '#app',
   data: {
     run_flag: true,
-    step:110,
+    step:150,
     step_array:[],
     run_msg: MSG,
     err_msg: ERR_MSG,
@@ -128,8 +128,9 @@ vm.step_array.push( make_step( 110, "第一步：检查环境。", check_env_110
 vm.step_array.push( make_step( 120, "第二步：选择销售订单明细文件。", select_file_120 , 130) );
 vm.step_array.push( make_step( 130, "第三步：检查输入文件是否齐备。", check_src_130, 140 ) );
 vm.step_array.push( make_step( 140, "第四步：检查「销售订单」文件是否合格。", check_order_140, 150 ) );
-vm.step_array.push( make_step( 150, "第五步：检查「到货」文件是否合格。。", check_arrival_150, 160 ) );
-vm.step_array.push( make_step( 160, "第六步：检查「自有调社会」文件是否合格。。", check_transfer_160, 170 ) );
+vm.step_array.push( make_step( 150, "第五步：订单数据存入数据库。", order_to_db_150, 160 ) );
+vm.step_array.push( make_step( 160, "第六步：检查「到货」文件是否合格。", check_arrival_160, 170 ) );
+vm.step_array.push( make_step( 170, "第七步：检查「自有调社会」文件是否合格。", check_transfer_170, 180 ) );
 // vm.step_array.push( make_step( 170, "第七步：计算订单毛利。", calc_gross_170, 180 ) );
 // vm.step_array.push( make_step( 180, "第八步：加总物料毛利。", calc_prod_180, 190 ) );
 // vm.step_array.push( make_step( 190, "第九步：加总物料组毛利。", calc_group_190, 200 ) );
@@ -139,8 +140,8 @@ vm.step_array.push( make_step( 160, "第六步：检查「自有调社会」文�
 // vm.step_array.push( make_step( 230, "第十二步：格式化数字。", format_230, 240 ) );
 // vm.step_array.push( make_step( 240, "第十三步：完成。", finish_240, 240 ) );
 
-init_100();
-console.log(vm.step_array);
+
+//console.log(vm.step_array);
 
 
 var debug_flag = 0;
