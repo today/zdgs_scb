@@ -29,7 +29,10 @@ var init_100 = function(){
   //order_files.push("终端销售明细表铜川");
 
   vm.src_files_flag = order_files.concat(other_files);
+  //console.log(vm.src_files_flag);
   vm.order_files_flag = order_files;
+
+  return true;
 }
 
 var check_env_110 = function(){
@@ -44,7 +47,7 @@ var check_env_110 = function(){
 };
 
 var select_file_120 = function(){
-  
+
   if(fs.existsSync(vm.sales_filename)) {
     console.log('销售记录文件存在');
     
@@ -66,8 +69,7 @@ var check_src_130 = function(){
 
   // 自动寻找 程序运行所必须的数据源
   vm.src_files = find_src_file(vm.base_dir, vm.src_files_flag);
-  
-  console.log( vm.src_files);
+  //console.log( vm.src_files);
 
   for( temp_name in vm.src_files){
     if( undefined === vm.src_files[temp_name]){
@@ -122,9 +124,12 @@ var check_order_140 = function(){
   // 检查历史数据，看是否有重复数据，有则报错。
   var all_order = getAllOrder();
   var imei_index = find_title_index(all_order[0], "手机串码");
-  var imei_array = select_col_from_array( all_order, imei_index);
-
-
+  var imei_array = select_one_col_from_table( all_order, imei_index);
+  for(var i=0; i<ORDER_DETAIL.length; i++){
+    if( _.indexOf(imei_array, ORDER_DETAIL[i][imei_index]) > -1 ){
+      ERR_MSG.put("数据异常：发现重复的「手机串码」。 " + ORDER_DETAIL[i] );
+    }
+  }
 
   setTimeout(function() {
     document.getElementById('srcfile_area').style.cssText = "font-size:9px;color:grey;";
@@ -135,10 +140,11 @@ var check_order_140 = function(){
 
 // 订单数据存入数据库
 var order_to_db_150 = function(){
-  
-  
+  var all_order = getAllOrder();
+  var all_data = all_order.concat( _.rest(ORDER_DETAIL) ); // 合并数组时，不要第一行：标题行
 
-
+  var buffer = xlsx.build([{name: "本月销售订单", data: all_data }] );
+  fs.writeFileSync( "db/all_order.xlsx", buffer);
 
   // 把所有数据存入DB。
 

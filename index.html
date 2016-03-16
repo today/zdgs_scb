@@ -65,7 +65,7 @@
     <div>Debug Area</div><br/>
     step:<input  type="number" v-model="step"  name="text_1" /> {{step}}
     <br><br>
-    <button  @click="setStep(140)" > 110 </button> 
+    <button  @click="setStep(100)" > Init </button> 
     <button  @click="setStep(180)" > 180 </button><br/>
   </div>
 
@@ -123,7 +123,7 @@ var make_step = function( i_index, s_desc, f_func_name, next ){
   obj_step.next_step_idx = next;
   return obj_step;
 };
-
+vm.step_array.push( make_step( 100, "第零步：系统启动。", init_100, 110 ) );
 vm.step_array.push( make_step( 110, "第一步：检查环境。", check_env_110, 120 ) );
 vm.step_array.push( make_step( 120, "第二步：选择销售订单明细文件。", select_file_120 , 130) );
 vm.step_array.push( make_step( 130, "第三步：检查输入文件是否齐备。", check_src_130, 140 ) );

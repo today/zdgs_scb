@@ -56,6 +56,7 @@ function find_src_file( base_dir, files_flag ){
     console.log('base_dir 存在');
 
     var all_file = fs.readdirSync(base_dir);
+    //console.log(files_flag);
 
     for(var i=0; i<files_flag.length; i++){
       var key=files_flag[i];
@@ -97,6 +98,21 @@ function select_col_from_array(a_array, col_indexs){
     for(var j=0; j<col_indexs.length; j++){
       temp.push(a_array[i][col_indexs[j]]);
     }
+    dest.push(temp);
+  }
+  return dest;
+}
+
+/*
+ 从二维数组中取出指定的一个列，并做成一维数组返回
+*/
+function select_one_col_from_table(a_array, col_index ){
+  var dest = [];
+  var temp = null;
+  for(var i=0; i<a_array.length; i++){
+    temp = null;
+    temp = a_array[i][col_index];
+    
     dest.push(temp);
   }
   return dest;
