@@ -85,8 +85,11 @@ var check_order_140 = function(){
   
   //  终端销售明细表  格式检查
   var must_field = [];
+  must_field.push("物料类型");
   must_field.push("物料编码");
   must_field.push("机型");
+  // must_field.push("采购来源");   // 这个数据不知道从哪里取
+  // must_field.push("单价");   // 这个数据不知道从哪里取
   must_field.push("归属地州");
   must_field.push("手机号码");
   must_field.push("手机串码");
@@ -117,17 +120,7 @@ var check_order_140 = function(){
       console.log(index_must);
       order_info2 = select_col_from_array( order_info, index_must);
       ORDER_DETAIL = ORDER_DETAIL.concat( _.rest(order_info2) );
-      console.log("ORDER_DETAIL.length=" + ORDER_DETAIL.length);
-    }
-  }
-
-  // 检查历史数据，看是否有重复数据，有则报错。
-  var all_order = getAllOrder();
-  var imei_index = find_title_index(all_order[0], "手机串码");
-  var imei_array = select_one_col_from_table( all_order, imei_index);
-  for(var i=0; i<ORDER_DETAIL.length; i++){
-    if( _.indexOf(imei_array, ORDER_DETAIL[i][imei_index]) > -1 ){
-      ERR_MSG.put("数据异常：发现重复的「手机串码」。 " + ORDER_DETAIL[i] );
+      //console.log("ORDER_DETAIL.length=" + ORDER_DETAIL.length);
     }
   }
 
@@ -138,17 +131,20 @@ var check_order_140 = function(){
   return run_flag;
 }
 
-// 订单数据存入数据库
-var order_to_db_150 = function(){
+var check_IMEI_conflict_150 = function() {
+  // 检查历史数据，看是否有重复数据，有则显示警告信息。
   var all_order = getAllOrder();
-  var all_data = all_order.concat( _.rest(ORDER_DETAIL) ); // 合并数组时，不要第一行：标题行
+  var imei_index = find_title_index(all_order[0], "手机串码");
+  var imei_array = select_one_col_from_table( all_order, imei_index);
+  for(var i=0; i<ORDER_DETAIL.length; i++){
+    if( _.indexOf(imei_array, ORDER_DETAIL[i][imei_index]) > -1 ){
+      ERR_MSG.put("数据异常：发现重复的「手机串码」。 " + ORDER_DETAIL[i] );
+    }
+  }
 
-  var buffer = xlsx.build([{name: "本月销售订单", data: all_data }] );
-  fs.writeFileSync( "db/all_order.xlsx", buffer);
-
-  // 把所有数据存入DB。
-
+  return true;
 }
+
 
 var check_arrival_160 = function(){
   // 到货数据  格式检查
@@ -158,8 +154,6 @@ var check_arrival_160 = function(){
   must_field.push("移出物料");
   must_field.push("移出物料描述");
   must_field.push("移入库位描述");
-
-  console.log("ORDER_DETAIL.length=" + ORDER_DETAIL.length);
 
   return true;
 }
@@ -172,7 +166,59 @@ var check_transfer_170 = function(){
   must_field2.push("实际交货日期");
   must_field2.push("实际交货数量");
   must_field2.push("物料编号");
+  
+  return true;
 }
+
+var calc_180 = function(){
+  //  计算物料组分项汇总
+  var title = [];
+  title.push("序号");
+  title.push("类型");
+  title.push("分公司");
+  title.push("机型");
+  title.push("采购来源");
+  title.push("是否智能手机");
+  title.push("单价");
+  title.push("机型代码");
+  title.push("期末结余");
+  title.push("本期销售");
+  title.push("累计前一天销量");
+  title.push("本期到货数量合计");
+  title.push("02月到货");
+  title.push("自有调社会");
+  title.push("本日出库");
+  title.push("月销量");
+  title.push("月结余数量");
+  title.push("上市时间");
+  title.push("当日时间");
+  title.push("上市时长");
+  title.push("日存销比");
+
+  // 获得机型列表
+  var all_title = ORDER_DETAIL[0];
+  var prod_index = find_title_index(all_title, "机型");
+  var all_prod_type = select_one_col_from_table( ORDER_DETAIL, prod_index);
+  var all_prod_type = _.rest(all_prod_type);
+
+  console.log(all_prod_type);
+                                      
+  
+  return true;
+}
+
+// 订单数据存入数据库
+var order_to_db_350 = function(){
+  var all_order = getAllOrder();
+  var all_data = all_order.concat( _.rest(ORDER_DETAIL) ); // 合并数组时，不要第一行：标题行
+
+  // 把所有数据存入历史记录文件。
+  var buffer = xlsx.build([{name: "本月销售订单", data: all_data }] );
+  fs.writeFileSync( "db/all_order.xlsx", buffer);
+}
+
+
+
 
 
 // 获得当月全部订单数据。

@@ -128,17 +128,18 @@ vm.step_array.push( make_step( 110, "第一步：检查环境。", check_env_110
 vm.step_array.push( make_step( 120, "第二步：选择销售订单明细文件。", select_file_120 , 130) );
 vm.step_array.push( make_step( 130, "第三步：检查输入文件是否齐备。", check_src_130, 140 ) );
 vm.step_array.push( make_step( 140, "第四步：检查「销售订单」文件是否合格。", check_order_140, 150 ) );
-vm.step_array.push( make_step( 150, "第五步：订单数据存入数据库。", order_to_db_150, 160 ) );
+vm.step_array.push( make_step( 150, "第五步：检查订单数据是否有重复的IMEI码。", check_IMEI_conflict_150, 160 ) );
 vm.step_array.push( make_step( 160, "第六步：检查「到货」文件是否合格。", check_arrival_160, 170 ) );
 vm.step_array.push( make_step( 170, "第七步：检查「自有调社会」文件是否合格。", check_transfer_170, 180 ) );
-// vm.step_array.push( make_step( 170, "第七步：计算订单毛利。", calc_gross_170, 180 ) );
-// vm.step_array.push( make_step( 180, "第八步：加总物料毛利。", calc_prod_180, 190 ) );
+vm.step_array.push( make_step( 180, "第七步：计算机型销售汇总。", calc_180, 190 ) );
+
 // vm.step_array.push( make_step( 190, "第九步：加总物料组毛利。", calc_group_190, 200 ) );
 // vm.step_array.push( make_step( 200, "第十步：填充渠道信息。", fill_branch_200, 210 ) );
 // vm.step_array.push( make_step( 210, "第十一步：填充地市信息。", fill_city_210, 220 ) );
 // vm.step_array.push( make_step( 220, "第十二步：计算地市渠道毛利。", calc_branch_city_220, 230 ) );
 // vm.step_array.push( make_step( 230, "第十二步：格式化数字。", format_230, 240 ) );
 // vm.step_array.push( make_step( 240, "第十三步：完成。", finish_240, 240 ) );
+vm.step_array.push( make_step( 350, "第二十五步：订单数据存入数据库。", order_to_db_350, 360 ) );
 
 
 //console.log(vm.step_array);
