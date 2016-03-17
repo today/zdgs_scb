@@ -66,7 +66,8 @@
     step:<input  type="number" v-model="step"  name="text_1" /> {{step}}
     <br><br>
     <button  @click="setStep(100)" > Init </button> 
-    <button  @click="setStep(180)" > 180 </button><br/>
+    <button  @click="setStep(180)" > 180 </button>
+    <button  onclick="test()" > test </button><br/>
   </div>
 
 
@@ -80,7 +81,7 @@ var vm = new Vue({
   el: '#app',
   data: {
     run_flag: true,
-    step:150,
+    step:100,
     step_array:[],
     run_msg: MSG,
     err_msg: ERR_MSG,
@@ -133,7 +134,7 @@ vm.step_array.push( make_step( 160, "第六步：检查「到货」文件是否�
 vm.step_array.push( make_step( 170, "第七步：检查「自有调社会」文件是否合格。", check_transfer_170, 180 ) );
 vm.step_array.push( make_step( 180, "第七步：计算机型销售汇总。", calc_180, 190 ) );
 
-// vm.step_array.push( make_step( 190, "第九步：加总物料组毛利。", calc_group_190, 200 ) );
+vm.step_array.push( make_step( 190, "第九步：加总物料组毛利。", todo_190, 200 ) );
 // vm.step_array.push( make_step( 200, "第十步：填充渠道信息。", fill_branch_200, 210 ) );
 // vm.step_array.push( make_step( 210, "第十一步：填充地市信息。", fill_city_210, 220 ) );
 // vm.step_array.push( make_step( 220, "第十二步：计算地市渠道毛利。", calc_branch_city_220, 230 ) );
