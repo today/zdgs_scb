@@ -95,6 +95,7 @@ var check_order_140 = function(){
   must_field.push("手机串码");
   must_field.push("销售数量");
   must_field.push("录入日期");
+  must_field.push("含税销售金额合计");
   
   ORDER_DETAIL.push(must_field);
 
@@ -122,7 +123,7 @@ var check_order_140 = function(){
       console.log(index_must);
       order_info2 = select_col_from_array( order_info, index_must);
       ORDER_DETAIL = ORDER_DETAIL.concat( _.rest(order_info2) );
-      //console.log("ORDER_DETAIL.length=" + ORDER_DETAIL.length);
+      
     }else{
       break;
     }
@@ -178,7 +179,7 @@ var calc_180 = function(){
   //  计算物料组分项汇总
   var title = [];
   title.push("序号");
-  title.push("类型");
+  title.push("物料类型");
   title.push("分公司");
   title.push("机型");
   title.push("采购来源");
@@ -199,27 +200,20 @@ var calc_180 = function(){
   title.push("上市时长");
   title.push("日存销比");
   var title_length = title.length;
-  function make_line(){
-    var line = [];
-    for(var i=0; i<title_length; i++){
-      line.push("");
-    }
-    return line;
-  };
 
-  var all_title = ORDER_DETAIL[0];
-  var city_index = find_title_index(all_title, "归属地州");
-  var prod_index = find_title_index(all_title, "机型");
-  var count_index = find_title_index(all_title, "销售数量");
-
+  // 获得源数据的字段索引
+  var src_title = ORDER_DETAIL[0];
+  var src_type_3G_4G_index = find_title_index(src_title, "物料类型");
+  var city_index = find_title_index(src_title, "归属地州");
+  var prod_index = find_title_index(src_title, "机型");
+  //var index_s_origin = find_title_index(src_title, "采购来源");
+  //var index_s_if_smart = find_title_index(src_title, "是否智能手机");
+  var index_s_price = find_title_index(src_title, "含税销售金额合计");
+  var index_s_code = find_title_index(src_title, "物料编码");
+  var count_index = find_title_index(src_title, "销售数量");
 
   // 获得不重复的地市列表
-  var city_list = select_one_col_from_table( ORDER_DETAIL, city_index);
-  city_list = _.rest(city_list);  // 去除第0个元素：标题行
-  city_list = _.unique(city_list);
-  city_list.sort();
-  console.log(city_list);
-  MSG.put("地市列表： [" + city_list.join() + "]");
+  var all_city = getAllCity();
 
   // 获得不重复的机型列表
   var all_prod_type = select_one_col_from_table( ORDER_DETAIL, prod_index);
@@ -234,34 +228,57 @@ var calc_180 = function(){
   all_prod_type = _.unique(all_prod_type);
   all_prod_type.sort();
   console.log(all_prod_type);
-
-  var all_city = [];
-  all_city.push("西安城区");
-  all_city.push("西安区县");
-  all_city.push("咸阳");
-  all_city.push("宝鸡");
-  all_city.push("渭南");
-  all_city.push("铜川");
-  all_city.push("延安");
-  all_city.push("榆林");
-  all_city.push("汉中");
-  all_city.push("安康");
-  all_city.push("商洛");
   
   // 构造空白的二维数组
+  var index_index = find_title_index(title, "序号");
   var branch_index = find_title_index(title, "分公司");
   var result_prod_index = find_title_index(title, "机型");
   var sales_index = find_title_index(title, "本日出库");
+  //var index_d_origin = find_title_index(title, "采购来源");
+  //var index_d_if_smart = find_title_index(title, "是否智能手机");
+  var index_d_price = find_title_index(title, "单价");
+  var index_d_code = find_title_index(title, "机型代码");
+  
+  // 通过产品 查到其他数据，并填充。 
+  var fill_data = function( order ){
+    var type_3G_4G = "";
+    var prod = order[result_prod_index];
+
+    for(var i=1; i<ORDER_DETAIL.length;i++ ){
+      var temp_order = ORDER_DETAIL[i];
+      var prod1 = temp_order[prod_index];
+      if( prod === prod1 ){
+        order[dest_type_3G_4G_index] = temp_order[src_type_3G_4G_index];
+        //order[index_d_origin]        = temp_order[index_s_origin];
+        //[index_d_if_smart]      = temp_order[index_s_if_smart];
+        var temp_price = temp_order[index_s_price];
+        temp_price = Math.abs( parseInt(temp_price) );
+
+        order[index_d_price]         = temp_price
+        order[index_d_code]          = temp_order[index_s_code];
+        console.log("order=" + order );
+        break;
+      }
+    }
+  }
+
   var result_array = [];
   result_array.push(title);
+  var dest_type_3G_4G_index = find_title_index(title, "物料类型");
+  console.log("title=" + title);
+  console.log( "dest_type_3G_4G_index=" + dest_type_3G_4G_index);
   for(var i=0; i<all_prod_type.length; i++ ){
     var prod = all_prod_type[i];
-    for(var j=0; j<all_city.length; j++){
-      var temp = make_line();
 
+    for(var j=0; j<all_city.length; j++){
+      var temp = make_array_by_space( title_length );
+      temp[index_index] = result_array.length;
       temp[branch_index] = all_city[j];
-      temp[result_prod_index] = all_prod_type[i];
+      temp[result_prod_index] = prod;
       temp[sales_index] = 0;
+
+      fill_data(temp); // 填充其他字段的数据
+
       result_array.push(temp);
     }
   }
@@ -280,12 +297,14 @@ var calc_180 = function(){
       
       if(city===city2 && prod === prod2 ){
         temp[sales_index] += count;
-        console.log(count);
+        
+        
+        //console.log("count=" + count);
         break;
       }
     }
   }
-                      
+
   // 把计算结果存入文件。
   var buffer = xlsx.build([{name: "铺货终端报表（分地市）", data: result_array }] );
   fs.writeFileSync( vm.base_dir + "中间文件_第一步.xlsx", buffer);
@@ -308,10 +327,6 @@ var order_to_db_350 = function(){
   fs.writeFileSync( "db/all_order.xlsx", buffer);
 }
 
-
-
-
-
 // 获得当月全部订单数据。
 var getAllOrder = function(){
   var all_order = getData_from_xlsx("db/all_order.xlsx");
@@ -319,6 +334,22 @@ var getAllOrder = function(){
     all_order = [];
   }
   return all_order;
+}
+
+var getAllCity = function(){
+  var all_city = [];
+  all_city.push("西安城区");
+  all_city.push("西安区县");
+  all_city.push("咸阳");
+  all_city.push("宝鸡");
+  all_city.push("渭南");
+  all_city.push("铜川");
+  all_city.push("延安");
+  all_city.push("榆林");
+  all_city.push("汉中");
+  all_city.push("安康");
+  all_city.push("商洛");
+  return all_city;
 }
 
 var getData_from_xlsx = function( fullpath ){
