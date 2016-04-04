@@ -215,8 +215,13 @@ var calc_180 = function(){
   // 获得不重复的地市列表
   var all_city = getAllCity();
 
-  // 获得不重复的机型列表
-  var all_prod_type = select_one_col_from_table( ORDER_DETAIL, prod_index);
+  // 获得不重复的机型列表  为了得到完整的列表，所以要把  当日订单 和 历史订单 中的机型都取出来。
+  var ORDER_DETAIL_HISTORY = getAllOrder();
+
+  var all_prod_type1 = select_one_col_from_table( ORDER_DETAIL_HISTORY, prod_index);
+  var all_prod_type2 = select_one_col_from_table( ORDER_DETAIL, prod_index);
+  var all_prod_type = all_prod_type1.concat(_.rest(all_prod_type2));    // 合并数组，并提前去除第0个元素：标题行
+
   for(i=0;i<all_prod_type.length;i++){
     if( undefined === all_prod_type[i] || "" === all_prod_type[i] ){
       console.log("undefined at " + i );
@@ -233,6 +238,7 @@ var calc_180 = function(){
   var index_index = find_title_index(title, "序号");
   var branch_index = find_title_index(title, "分公司");
   var result_prod_index = find_title_index(title, "机型");
+  var sales_sum_index = find_title_index(title, "累计前一天销量");
   var sales_index = find_title_index(title, "本日出库");
   //var index_d_origin = find_title_index(title, "采购来源");
   //var index_d_if_smart = find_title_index(title, "是否智能手机");
@@ -275,6 +281,7 @@ var calc_180 = function(){
       temp[index_index] = result_array.length;
       temp[branch_index] = all_city[j];
       temp[result_prod_index] = prod;
+      temp[sales_sum_index] = 0;
       temp[sales_index] = 0;
 
       fill_data(temp); // 填充其他字段的数据
@@ -284,6 +291,26 @@ var calc_180 = function(){
   }
 
   // 填充数据
+  // 本期销售数据
+  for(var i=1;i<ORDER_DETAIL_HISTORY.length;i++){
+    var order = ORDER_DETAIL_HISTORY[i];
+    var city = order[city_index];
+    var prod = order[prod_index];
+    var count = order[count_index];
+
+    for(var j=1; j<result_array.length; j++){
+      var temp = result_array[j];
+      var city2 = temp[branch_index];
+      var prod2 = temp[result_prod_index];
+      var count2 = temp[sales_sum_index];
+      
+      if(city===city2 && prod === prod2 ){
+        temp[sales_sum_index] = parseInt(count2) + parseInt(count);
+        break;
+      }
+    }
+  }
+  // 本日销售数据
   for(var i=1;i<ORDER_DETAIL.length;i++){
     var order = ORDER_DETAIL[i];
     var city = order[city_index];
@@ -294,12 +321,10 @@ var calc_180 = function(){
       var temp = result_array[j];
       var city2 = temp[branch_index];
       var prod2 = temp[result_prod_index];
+      var count2 = temp[sales_index];
       
       if(city===city2 && prod === prod2 ){
-        temp[sales_index] += count;
-        
-        
-        //console.log("count=" + count);
+        temp[sales_index] = parseInt(count2) + parseInt(count);
         break;
       }
     }
