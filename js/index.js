@@ -238,6 +238,7 @@ var calc_180 = function(){
   var index_index = find_title_index(title, "序号");
   var branch_index = find_title_index(title, "分公司");
   var result_prod_index = find_title_index(title, "机型");
+  var sales_all_index = find_title_index(title, "本期销售");
   var sales_sum_index = find_title_index(title, "累计前一天销量");
   var sales_index = find_title_index(title, "本日出库");
   //var index_d_origin = find_title_index(title, "采购来源");
@@ -291,7 +292,7 @@ var calc_180 = function(){
   }
 
   // 填充数据
-  // 本期销售数据
+  // 累计前一天销量
   for(var i=1;i<ORDER_DETAIL_HISTORY.length;i++){
     var order = ORDER_DETAIL_HISTORY[i];
     var city = order[city_index];
@@ -329,6 +330,15 @@ var calc_180 = function(){
       }
     }
   }
+
+  // 本期销售数据  
+  for(var j=1; j<result_array.length; j++){
+    var temp = result_array[j];
+    var sum = temp[sales_sum_index];
+    var count = temp[sales_index];
+    temp[sales_all_index] = sum + count; 
+  }
+  
 
   // 把计算结果存入文件。
   var buffer = xlsx.build([{name: "铺货终端报表（分地市）", data: result_array }] );
