@@ -13,6 +13,7 @@ var init_100 = function(){
 
   // 充当数据源的文件 的文件名 的关键字
   other_files = [];
+  other_files.push("销售月报表");
   other_files.push("到货数据");
   other_files.push("自有调社会");
 
@@ -71,8 +72,22 @@ var check_src_130 = function(){
   vm.src_files = find_src_file(vm.base_dir, vm.src_files_flag);
   //console.log( vm.src_files);
 
+  // 填充 「销售月报表」 数据源
+  if(fs.existsSync( vm.base_dir + "/..")) {
+    console.log('base_dir 存在');
+    var all_file = fs.readdirSync( vm.base_dir + "/..");
+    var temp_key = "销售月报表";
+    for(var j=0; j<all_file.length; j++){
+      if( all_file[j].indexOf(temp_key) > -1 ){
+        vm.src_files[temp_key] = "../" + all_file[j];
+        break;
+      }
+    }
+  }
+
   for( temp_name in vm.src_files){
     if( undefined === vm.src_files[temp_name]){
+
       ERR_MSG.put( "输入文件不全。缺少：" + temp_name );
       run_flag = false;
     }

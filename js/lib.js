@@ -64,10 +64,11 @@ function find_src_file( base_dir, files_flag ){
 
       for(var j=0; j<all_file.length; j++){
         if( all_file[j].indexOf(key) > -1 ){
-          var file_name = all_file[j];
+          file_name = all_file[j];
+          break;
         }
       }
-      dest_files[key] = file_name;
+      dest_files[key] = file_name;  
     }
   } else {
     console.log('base_dir 不存在');
