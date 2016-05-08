@@ -144,6 +144,49 @@ var check_order_140 = function(){
     }
   }
 
+  // 验证无误的数据，插入数据库。
+  if( run_flag == true ){
+    var temp_title = ORDER_DETAIL[0];
+    var src_type_3G_4G_index = find_title_index(temp_title, "物料类型");
+    var index_s_code = find_title_index(temp_title, "物料编码");
+    var prod_index = find_title_index(temp_title, "机型");
+    var city_index = find_title_index(temp_title, "归属地州");
+    var phone_no_index = find_title_index(temp_title, "手机号码");
+    var imei_index = find_title_index(temp_title, "手机串码");
+    var count_index = find_title_index(temp_title, "销售数量");
+    var date_index = find_title_index(temp_title, "录入日期");
+    var index_s_price = find_title_index(temp_title, "含税销售金额合计");
+    
+    var conn = getConn();
+
+    for(var i=1; i<ORDER_DETAIL.length; i++ ){
+      var order = ORDER_DETAIL[i];
+      var sql = "insert into t_order (wllx, wlbm, jx, gsdz, sjhm, sjcm, xssl, lrrq, hsxsjehj ) values ( "
+              + "'" + order[src_type_3G_4G_index]
+              + "','" + order[index_s_code]
+              + "','" + order[prod_index]
+              + "','"+ order[city_index]
+              +"','"+ order[phone_no_index]
+              +"','"+ order[imei_index]
+              +"','"+ order[count_index]
+              +"','"+ order[date_index]
+              +"','"+ order[index_s_price]
+              +"' )";
+      var query = conn.query( sql, {}, function(err, result) {
+        if (err) {
+          ERR_MSG.put("数据库出错：插入失败。");
+          run_flag = false;
+        }else{
+          // MSG.put("销售数据成功插入到数据库。");
+        }
+      });
+
+    }
+    conn.end(function(err) {
+      MSG.put("销售数据成功插入到数据库。");
+    });
+  }
+
   setTimeout(function() {
     document.getElementById('srcfile_area').style.cssText = "font-size:9px;color:grey;";
     console.log( document.getElementById('srcfile_area').style );

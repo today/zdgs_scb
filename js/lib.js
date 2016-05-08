@@ -6,6 +6,19 @@
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
+var mysql = require("mysql");
+
+var getConn = function(){
+  var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : '',
+    database : 'zdgsscb'
+  });
+   
+  return connection;
+}
+
 
 var Msg = {
   createNew: function(){

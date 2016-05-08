@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "node-xlsx": "~0.6.0",
-    "sqlite3": "",
+    "mysql": "2.10.2",
     "underscore": "~1.4.4"
   },
   "webkit": {
